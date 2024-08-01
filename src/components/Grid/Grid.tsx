@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SelectComponent } from '../../shared/ui/Select/Select';
 import './Grid.scss';
 import { getProducts } from '../../utils/api';
@@ -19,31 +19,37 @@ const onPageCountOptions = [
   { value: '30', label: '30' },
 ];
 
-export const Grid = () => {
-  const [allPhones, setAllPhones] = useState<Product[]>([]);
-  const [displayedPhones, setDisplayedPhones] = useState<Product[]>([]);
+type Props = {
+  category: string;
+  pageName: string;
+  pageTitle: string;
+}
+
+export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
   const [itemsPerPage, setItemsPerPage] = useState<number>(40);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const loadPhones = async () => {
-    try {
-      const data = await getProducts();
-      const onlyPhones = data.filter((item) => item.category === 'phones');
-      setAllPhones(onlyPhones);
-    } catch (error) {
-      throw new Error(`Error has occurred: ${error}`);
-    }
-  };
 
   const updateDisplayedPhones = useCallback(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    setDisplayedPhones(allPhones.slice(startIndex, endIndex));
-  }, [itemsPerPage, currentPage, allPhones]);
+    setDisplayedProducts(allProducts.slice(startIndex, endIndex));
+  }, [itemsPerPage, currentPage, allProducts]);
 
   useEffect(() => {
+    const loadPhones = async () => {
+      try {
+        const data = await getProducts();
+        const onlyPhones = data.filter((item) => item.category === category);
+        setAllProducts(onlyPhones);
+      } catch (error) {
+        throw new Error(`Error has occurred: ${error}`);
+      }
+    };
+
     loadPhones();
-  }, []);
+  }, [category]);
 
   useEffect(() => {
     updateDisplayedPhones();
@@ -60,7 +66,7 @@ export const Grid = () => {
     if (select === SortOptions[0].value) {
       return;
     }
-    const itemsToSort = [...allPhones];
+    const itemsToSort = [...allProducts];
     const sorted = itemsToSort.sort((item1, item2) => {
       if (select === 'newest') {
         return item2.year - item1.year;
@@ -70,7 +76,7 @@ export const Grid = () => {
       }
       return 0;
     });
-    setAllPhones(sorted);
+    setAllProducts(sorted);
   };
 
   const getTotalPages = (
@@ -95,13 +101,13 @@ export const Grid = () => {
           <div className="path__arrow">
             <img src="/Icons/Chevron (Arrow Right).svg" alt="Arrow right" />
           </div>
-          <div className="path__page">Phones</div>
+          <div className="path__page">{pageName}</div>
         </div>
         <div className="component__header">
-          <h1 className="component__title">Mobile phones</h1>
+          <h1 className="component__title">{pageTitle}</h1>
         </div>
         <div className="component__models-number">
-          <p>{`${allPhones.length} models`}</p>
+          <p>{`${allProducts.length} models`}</p>
         </div>
         <div className="component__list-params list-params">
           <span className="list-params__sort-by">
@@ -121,8 +127,8 @@ export const Grid = () => {
         </div>
         <div className="component__wrap">
           <div className="component__list list">
-            {displayedPhones.map((phone) => (
-              <ProductCard phone={phone} key={phone.id} />
+            {displayedProducts.map((product) => (
+              <ProductCard product={product} key={product.id} />
             ))}
           </div>
         </div>
@@ -134,7 +140,7 @@ export const Grid = () => {
             disabled={currentPage === 1}
             onClick={() => handlePageChange(currentPage - 1)}
           />
-          {getTotalPages(allPhones, itemsPerPage).map((page) => (
+          {getTotalPages(allProducts, itemsPerPage).map((page) => (
             <button
               className={classNames('nav-wrap__page', {
                 active: page === currentPage,
@@ -151,7 +157,7 @@ export const Grid = () => {
             type="button"
             aria-label="next"
             disabled={
-              currentPage === getTotalPages(allPhones, itemsPerPage).length
+              currentPage === getTotalPages(allProducts, itemsPerPage).length
             }
             onClick={() => handlePageChange(currentPage + 1)}
           />

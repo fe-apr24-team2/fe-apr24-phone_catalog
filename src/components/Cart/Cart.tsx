@@ -60,7 +60,7 @@ export const Cart = () => {
       </div>
       {orderDone && (
         <div className="modal">
-          <div className="content">
+          <div className="cart_content">
             <div className="doneLogo" />
             <div className="doneTitle">
               <h1 className="orderTitle">Order accepted</h1>

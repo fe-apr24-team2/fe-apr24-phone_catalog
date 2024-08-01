@@ -1,3 +1,5 @@
-import React from 'react';
+import { Grid } from '../../components/Grid/Grid';
 
-export const TabletsPage: React.FC = () => <h1>Tablets Page</h1>;
+export const TabletsPage = () => (
+  <Grid category="tablets" pageTitle="Tablets page" pageName="Tablets" />
+);
