@@ -5,9 +5,9 @@ import { getProducts } from '../../utils/api';
 import { Product } from '../../types/Product';
 
 type Props = {
-  title: string
-  sortType: 'model' | 'price'
-}
+  title: string;
+  sortType: 'model' | 'price';
+};
 
 // write it in the right component
 // <RecommendedGoods title="Brand new models" sortType="model" />
@@ -70,7 +70,9 @@ export const RecommendedGoods: React.FC<Props> = ({ title, sortType }) => {
   const fetchPhones = useCallback(async () => {
     try {
       const phonesData = await getProducts();
-      const onlyPhones = phonesData.filter((item) => item.category === 'phones');
+      const onlyPhones = phonesData.filter(
+        (item) => item.category === 'phones',
+      );
       let sortedPhones = onlyPhones;
 
       if (sortType === 'model') {
@@ -188,10 +190,7 @@ export const RecommendedGoods: React.FC<Props> = ({ title, sortType }) => {
         {phones
           .slice(currentIndex, currentIndex + getItemsPerPage())
           .map((phone) => (
-            <ProductCard
-              key={phone.id}
-              phone={phone}
-            />
+            <ProductCard key={phone.id} phone={phone} />
           ))}
       </div>
     </>
