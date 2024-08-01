@@ -17,7 +17,7 @@ export const App: React.FC = () => (
     <Router>
       <div className="wrapper">
         <Header />
-        <main className="content">
+        <main className="content-main">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/phones/*" element={<BaseLayout />} />

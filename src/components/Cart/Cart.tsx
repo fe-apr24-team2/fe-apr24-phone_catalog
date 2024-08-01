@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import './Cart.scss';
+import classNames from 'classnames';
 import { CartContext } from '../../utils/CartContext';
 import { CartItem } from '../CartItem/CartItem';
 
@@ -12,7 +13,15 @@ export const Cart = () => {
     throw new Error('Error has occured with context');
   }
 
-  const { cart } = context;
+  const { cart, clearCart } = context;
+
+  const makeOrder = () => {
+    setOrderDone(true);
+    setTimeout(() => {
+      clearCart();
+      window.location.href = '/';
+    }, 4000);
+  };
 
   const calculatePrice = () => {
     return cart.reduce((acc, item) => {
@@ -50,8 +59,11 @@ export const Cart = () => {
             <div className="line" />
             <button
               type="button"
-              className="checkout"
-              onClick={() => setOrderDone(true)}
+              className={classNames('checkout', {
+                disabled: calculatePrice() === 0,
+              })}
+              onClick={makeOrder}
+              disabled={calculatePrice() === 0}
             >
               Checkout
             </button>
@@ -60,7 +72,7 @@ export const Cart = () => {
       </div>
       {orderDone && (
         <div className="modal">
-          <div className="cart_content">
+          <div className="modal-content ">
             <div className="doneLogo" />
             <div className="doneTitle">
               <h1 className="orderTitle">Order accepted</h1>
@@ -71,6 +83,7 @@ export const Cart = () => {
               className="homeButton"
               aria-label="Home"
               onClick={() => {
+                clearCart();
                 document.body.style.overflow = '';
                 window.location.href = '/';
               }}

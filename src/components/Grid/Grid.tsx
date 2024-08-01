@@ -28,8 +28,13 @@ type Props = {
 export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
+
+const PAGES_DEFAULT = [1, 2, 3, 4];
   const [itemsPerPage, setItemsPerPage] = useState<number>(40);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pagesOnScreen, setPagesOnScreen] = useState<number[]>(PAGES_DEFAULT);
+
+  const topRef = useRef<HTMLDivElement>(null);
 
   const updateDisplayedPhones = useCallback(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -53,19 +58,25 @@ export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
 
   useEffect(() => {
     updateDisplayedPhones();
-  }, [updateDisplayedPhones]);
+  }, [updateDisplayedPhones, pagesOnScreen]);
 
   const handleItemsPerPageChange = (selectedOption: { value: string }) => {
-    setItemsPerPage(parseInt(selectedOption.value, 10));
+    const newItemsPerPage = parseInt(selectedOption.value, 10);
+    setItemsPerPage(newItemsPerPage);
     setCurrentPage(1);
+    setPagesOnScreen([1, 2, 3, 4]);
   };
 
   const handleSortByYear = (selectedOption: { value: string }) => {
     const select = selectedOption.value;
+    const sortedPhones = [...allPhones];
 
-    if (select === SortOptions[0].value) {
-      return;
+    if (select === 'newest') {
+      sortedPhones.sort((a, b) => b.year - a.year);
+    } else if (select === 'oldest') {
+      sortedPhones.sort((a, b) => a.year - b.year);
     }
+    
     const itemsToSort = [...allProducts];
     const sorted = itemsToSort.sort((item1, item2) => {
       if (select === 'newest') {
@@ -77,6 +88,9 @@ export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
       return 0;
     });
     setAllProducts(sorted);
+
+    setCurrentPage(1);
+    setPagesOnScreen([1, 2, 3, 4]);
   };
 
   const getTotalPages = (
@@ -87,15 +101,49 @@ export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
     return Array.from({ length: pageCount }, (_, i) => i + 1);
   };
 
-  const handlePageChange = (pageNumber: number) => {
+  const handlePaginationClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+
+    if (topRef.current) {
+      try {
+        topRef.current.scrollIntoView({ behavior: 'smooth' });
+      } catch (e) {
+        topRef.current.scrollIntoView({ behavior: 'auto' });
+      }
+    }
+
+    const totalPages = getTotalPages(allPhones, itemsPerPage);
+
+    if (pageNumber <= totalPages[totalPages.length - 1]) {
+      let startPage = 1;
+      let endPage = 4;
+
+      if (pageNumber >= 4) {
+        startPage = pageNumber - 1;
+        endPage = Math.min(startPage + 3, totalPages.length);
+      }
+
+      if (totalPages.length <= 4) {
+        startPage = 1;
+        endPage = totalPages.length;
+      } else if (endPage - startPage < 3) {
+        startPage = Math.max(1, endPage - 3);
+      }
+
+      const onDisplay = Array.from(
+        { length: endPage - startPage + 1 },
+        (_, i) => startPage + i,
+      );
+
+      setPagesOnScreen(onDisplay);
+    }
   };
 
   return (
-    <div className="component" id="top">
+    <div className="component" id="top" ref={topRef}>
       <div className="component__container">
         <div className="component__path path">
-          <a className="path__home-image" href="/">
+          <a className="path__home-image" href="home">
             <img src="/Icons/Home.svg" alt="Home icon" />
           </a>
           <div className="path__arrow">
@@ -138,8 +186,9 @@ export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
             type="button"
             aria-label="back"
             disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
+            onClick={() => handlePaginationClick(currentPage - 1)}
           />
+
           {getTotalPages(allProducts, itemsPerPage).map((page) => (
             <button
               className={classNames('nav-wrap__page', {
@@ -147,7 +196,7 @@ export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
               })}
               type="button"
               key={page}
-              onClick={() => handlePageChange(page)}
+              onClick={() => handlePaginationClick(page)}
             >
               {page}
             </button>
@@ -159,7 +208,7 @@ export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
             disabled={
               currentPage === getTotalPages(allProducts, itemsPerPage).length
             }
-            onClick={() => handlePageChange(currentPage + 1)}
+            onClick={() => handlePaginationClick(currentPage + 1)}
           />
         </div>
       </div>

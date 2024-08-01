@@ -24,6 +24,7 @@ $main-font: Mont, sans-serif;
 .baseLayout {
   display: flex;
   justify-content: center;
+  font-family: $main-font;
 }
 
 .baseContainer {
@@ -40,7 +41,7 @@ $main-font: Mont, sans-serif;
 .home {
   width: 16px;
   height: 16px;
-  background-image: url('../../../public/Icons/Home.svg');
+  background-image: url('/Icons/Home.svg');
   background-position: center;
   background-repeat: no-repeat;
   margin-right: 8px;
@@ -59,7 +60,7 @@ $main-font: Mont, sans-serif;
   margin-right: 8px;
   width: 16px;
   height: 16px;
-  background-image: url('../../../public/Icons/Chevron\ \(Arrow\ Left\).svg');
+  background-image: url('/Icons/Chevron\ \(Arrow\ Left\).svg');
 }
 
 .model {
@@ -90,7 +91,7 @@ $main-font: Mont, sans-serif;
 .sliderContainer {
   width: 560px;
   height: 464px;
-  border: 1px solid black;
+  // border: 1px solid black;
   box-sizing: border-box;
   margin-right: 75px;
 }
@@ -192,6 +193,14 @@ $main-font: Mont, sans-serif;
   border-radius: 0;
   box-sizing: border-box;
   margin-right: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.added {
+  background-color: white;
+  color: #27ae60;
+  border: 1px solid #e2e6e9;
 }
 
 .addToCart:hover {
@@ -207,7 +216,7 @@ $main-font: Mont, sans-serif;
   width: 48px;
   height: 48px;
   border: 1px solid #b4bdc3;
-  background-image: url('../../../public/Icons/Favourites\ \(Heart\ Like\).svg');
+  background-image: url('/Icons/Favourites\ \(Heart\ Like\).svg');
   background-position: center;
   background-repeat: no-repeat;
   background-color: white;
@@ -219,7 +228,7 @@ $main-font: Mont, sans-serif;
 }
 
 .addToFavorite:focus {
-  background-image: url('../../../public/Icons/Favourites\ Filled\ \(Heart\ Like\).svg');
+  background-image: url('/Icons/Favourites\ Filled\ \(Heart\ Like\).svg');
 }
 
 .info {
@@ -340,12 +349,13 @@ $main-font: Mont, sans-serif;
   margin: 0;
 }
 
-.swiper {
-  width: 1136px;
-  height: 571px;
+.swiper-recommended {
+  // width: 1136px;
+  height: 650px;
   border: 1px solid black;
   box-sizing: border-box;
   margin-bottom: 81px;
+  background-color: green;
 }
 
 @media (max-width: 1199px) {
@@ -402,8 +412,8 @@ $main-font: Mont, sans-serif;
     width: 592px;
   }
 
-  .swiper {
-    overflow: hidden;
+  .swiper-recommended {
+    // overflow: hidden;
     margin-bottom: 64px;
   }
 }
@@ -475,9 +485,9 @@ $main-font: Mont, sans-serif;
     width: 288px;
   }
 
-  .swiper {
-    width: 440px;
-    height: 495px;
+  .swiper-recommended {
+    // width: 440px;
+    // height: 495px;
     margin-bottom: 56px;
   }
 }

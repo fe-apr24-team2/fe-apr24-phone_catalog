@@ -3,39 +3,71 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import './ItemSlider.scss';
-import { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import photo1 from '../../../public/img/phones/apple-iphone-11/green/00.webp';
-import photo2 from '../../../public/img/phones/apple-iphone-11/green/01.webp';
-import photo3 from '../../../public/img/phones/apple-iphone-11/green/02.webp';
-import photo4 from '../../../public/img/phones/apple-iphone-11/green/03.webp';
+type Props = {
+  images: string[] | undefined;
+};
 
-const photos = [photo1, photo2, photo3, photo4];
-
-export const ItemSlider = () => {
-  const [mainPhoto, setMainPhoto] = useState(photo1);
-  const [selectedPhoto, setSelectedPhoto] = useState(photo1);
+export const ItemSlider: React.FC<Props> = ({ images }) => {
+  const [mainPhoto, setMainPhoto] = useState<string | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [isFading, setIsFading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 639);
 
-  const handleClick = (photo: string) => {
+  const handleClick = useCallback((photo: string) => {
     setIsFading(true);
     setTimeout(() => {
       setMainPhoto(photo);
       setSelectedPhoto(photo);
       setIsFading(false);
     }, 300);
-  };
+  }, []);
+
+  const getFirstPhoto = useCallback(() => {
+    if (images && images.length > 0) {
+      setMainPhoto(images[0]);
+      setSelectedPhoto(images[0]);
+    } else {
+      setMainPhoto(null);
+      setSelectedPhoto(null);
+    }
+  }, [images]);
+
+  useEffect(() => {
+    getFirstPhoto();
+  }, [getFirstPhoto]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 639);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  if (!images || images.length === 0) {
+    return <div>No photos</div>;
+  }
+
+  if (!mainPhoto) {
+    return <div>No main photo</div>;
+  }
 
   return (
     <div className="slider">
       <div className="slider__preview-pictures">
         <Swiper
           spaceBetween={16}
-          direction="vertical"
+          direction={isMobile ? 'horizontal' : 'vertical'}
           slidesPerView={4}
           freeMode
         >
-          {photos.map((photo) => (
+          {images.map((photo) => (
             <SwiperSlide key={photo}>
               <img
                 className={`slider__preview-pictures-img ${

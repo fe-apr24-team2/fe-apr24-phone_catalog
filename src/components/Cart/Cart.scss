@@ -160,6 +160,20 @@ $mainFont: Mont, sans-serif;
   box-shadow: 0px 7px 17px 0px #17203166;
 }
 
+.disabled {
+  background-color: #b4bdc3;
+  border-color: #b4bdc3;
+}
+
+.disabled:hover {
+  box-shadow: none;
+}
+
+.disabled:hover {
+  box-shadow: none;
+  transform: none;
+}
+
 .modal {
   position: fixed;
   width: 100%;
@@ -170,7 +184,7 @@ $mainFont: Mont, sans-serif;
   align-items: center;
 }
 
-.cart_content {
+.content-modal {
   width: 592px;
   height: 300px;
   background-color: #fff;
@@ -281,7 +295,7 @@ $mainFont: Mont, sans-serif;
     width: 240px;
   }
 
-  .content {
+  .modal-content {
     width: 50vh;
     height: 70%;
     flex-direction: column;

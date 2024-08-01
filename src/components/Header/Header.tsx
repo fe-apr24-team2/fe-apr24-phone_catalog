@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import './index.scss';
 import React from 'react';
-import logo from './logo.svg';
-import menu from './menu.svg';
+import { BurgerMenu } from './BurgerMenu/BurgerMenu';
+import logo from './img/logo.svg';
 
 export const Header: React.FC = () => {
   return (
@@ -54,9 +54,7 @@ export const Header: React.FC = () => {
               <a href="heart" className="icon icon--heart" aria-label="Heart" />
               <a href="/#cart" className="icon icon--cart" aria-label="Cart" />
             </div>
-          </div>
-          <div className="burger-menu">
-            <img src={menu} alt="Menu" />
+            <BurgerMenu />
           </div>
         </div>
       </div>

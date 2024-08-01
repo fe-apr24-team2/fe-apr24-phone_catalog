@@ -18,7 +18,9 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
     throw new Error('CartContext must be used within a CartProvider');
   }
 
-  const { addToCart } = context;
+  const { cart, addToCart } = context;
+
+  const inCart = cart.find((el) => el.itemId === phone.itemId);
 
   const relocate = () => {
     navigate(`${product.itemId}`);
@@ -28,7 +30,6 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.stopPropagation();
-    // Тут можна додати код для обробки кліку на кнопку, наприклад, додати товар до кошика
   };
 
   const handleAddToCart = () => {
@@ -85,12 +86,15 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
             handleAddToCart();
           }}
         >
-          <p className="product_button__text product_button__text-add">
-            Add to cart
-          </p>
-          <p className="product_button__text product_button__text-added">
-            Added
-          </p>
+          {inCart?.itemId === phone.itemId ? (
+            <p className="product_button__text product_button__text-added">
+              Added
+            </p>
+          ) : (
+            <p className="product_button__text product_button__text-add">
+              Add to cart
+            </p>
+          )}
         </button>
         <button
           type="button"

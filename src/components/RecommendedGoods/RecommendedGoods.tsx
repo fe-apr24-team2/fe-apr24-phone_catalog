@@ -1,50 +1,74 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useLayoutEffect,
+} from 'react';
 import './RecommendedGoods.scss';
 import { ProductCard } from '../ProductCard/ProductCard';
-import { Device } from '../../types/Device';
-import { getPhones } from '../../utils/api';
+import { getProducts } from '../../utils/api';
+import { Product } from '../../types/Product';
 
-export const RecommendedGoods: React.FC = () => {
-  const [phones, setPhones] = useState<Device[]>([]);
+type Props = {
+  price: number | undefined;
+};
+
+export const RecommendedGoods: React.FC<Props> = ({ price }) => {
+  const [phones, setPhones] = useState<Product[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const fetchPhones = async () => {
-    try {
-      const phonesData = await getPhones();
-      setPhones(phonesData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to fetch phones:', error);
+  const [isDisabledBack, setIsDisabledBack] = useState<boolean>(false);
+  const [isDisabledNext, setIsDisabledNext] = useState<boolean>(false);
+  const [visiblePhones, setVisiblePhones] = useState<Product[]>([]);
+
+  const fetchPhones = useCallback(async () => {
+    if (price === undefined) {
+      return;
     }
-  };
+
+    try {
+      const phonesData = (await getProducts()).filter(
+        (prod) => prod.category === 'phones',
+      );
+
+      const alikePhones = phonesData.filter(
+        (phone) => phone.price <= price + 100,
+      );
+      setPhones(alikePhones);
+    } catch (error) {
+      throw new Error('Failed to fetch phones:');
+    }
+  }, [price]);
 
   useEffect(() => {
     fetchPhones();
-  }, []);
+  }, [fetchPhones]);
 
   const getVisibleItems = () => {
-    if (window.innerWidth <= 480) {
-      return 2;
+    if (window.innerWidth <= 639) {
+      return 1;
     }
 
-    if (window.innerWidth <= 768) {
-      return 3;
+    if (window.innerWidth <= 1199) {
+      return 2;
     }
 
     return 4;
   };
 
-  const getItemsPerPage = () => {
-    const visibleItems = getVisibleItems();
+  useLayoutEffect(() => {
+    const updateReccomendedGoodsSlider = () => {
+      const itemsPerPage = getVisibleItems();
+      const itemsRemaining = phones.length - (currentIndex + itemsPerPage);
 
-    return visibleItems + 0.5;
-  };
-
-  const itemsPerPage = getItemsPerPage();
-  const itemsRemaining = phones.length - (currentIndex + itemsPerPage);
-
-  const isDisabledBack = currentIndex <= 0;
-  const isDisabledNext = itemsRemaining <= 0;
+      setIsDisabledBack(currentIndex <= 0);
+      setIsDisabledNext(itemsRemaining <= 0);
+      setVisiblePhones(phones.slice(currentIndex, currentIndex + itemsPerPage));
+    };
+    window.addEventListener('resize', updateReccomendedGoodsSlider);
+    updateReccomendedGoodsSlider();
+    return () => window.removeEventListener('resize', updateReccomendedGoodsSlider);
+  }, [currentIndex, phones]);
 
   const moveSlides = (direction: number) => {
     setCurrentIndex((prevIndex) => {
@@ -112,32 +136,9 @@ export const RecommendedGoods: React.FC = () => {
       </div>
 
       <div className="goods">
-        {phones
-          .slice(currentIndex, currentIndex + getItemsPerPage())
-          .map((phone) => (
-            <ProductCard
-              key={phone.id}
-              id={phone.id}
-              category={phone.category}
-              namespaceId={phone.namespaceId}
-              name={phone.name}
-              capacityAvailable={phone.capacityAvailable}
-              capacity={phone.capacity}
-              priceRegular={phone.priceRegular}
-              priceDiscount={phone.priceDiscount}
-              colorsAvailable={phone.colorsAvailable}
-              color={phone.color}
-              images={phone.images}
-              description={phone.description}
-              screen={phone.screen}
-              resolution={phone.resolution}
-              processor={phone.processor}
-              ram={phone.ram}
-              camera={phone.camera}
-              zoom={phone.zoom}
-              cell={phone.cell}
-            />
-          ))}
+        {visiblePhones.map((phone) => (
+          <ProductCard phone={phone} key={phone.id} />
+        ))}
       </div>
     </>
   );

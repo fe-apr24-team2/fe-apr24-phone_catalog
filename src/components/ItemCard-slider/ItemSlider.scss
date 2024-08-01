@@ -1,3 +1,9 @@
+.swiper {
+  width: 100%;
+  border: none;
+  margin: auto;
+  // overflow:visible;
+}
 .slider {
   display: flex;
   gap: 16px;
@@ -36,6 +42,41 @@
       &.selected {
         transform: scale(1.2);
         z-index: 1;
+      }
+    }
+  }
+  @media (max-width: 1199px) {
+    &__main-photo {
+      height: 287px;
+    }
+    &__preview-pictures {
+      height: 287px;
+      &-img {
+        height: 50px;
+        width: 50px;
+      }
+    }
+  }
+
+  @media (max-width: 639px) {
+    flex-direction: column-reverse;
+    height: auto;
+    .swiper {
+      height: 80px;
+    }
+
+    &__main-photo {
+      width: 288px;
+      height: 288px;
+    }
+
+    &__preview-pictures {
+      flex-direction: row;
+      height: 49px;
+
+      &-img {
+        height: 49px;
+        width: 49px;
       }
     }
   }

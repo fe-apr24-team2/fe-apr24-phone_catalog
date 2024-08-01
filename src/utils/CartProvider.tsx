@@ -51,12 +51,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
+  const clearCart = () => {
+    setCart([]);
+  };
+
   const contextValue = useMemo(
     () => ({
       cart,
       addToCart,
       changeItemCount,
       removeFromCart,
+      clearCart,
     }),
     [cart],
   );
