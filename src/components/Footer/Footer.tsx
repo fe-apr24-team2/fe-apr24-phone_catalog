@@ -26,36 +26,36 @@ export const Footer: React.FC = () => {
 
   return (
     <>
-    <hr className="footer_divider" />
-    <footer className="footer">
-      <a href="/home" className="footer__logo-link">
-        <img src="/Icons/Logo.svg" alt="logo" className="footer__logo" />
-      </a>
-      <div className="footer__links">
-        <NavLink
-          className="footer__link footer__item"
-          to="https://github.com/fe-apr24-team2"
-        >
-          Github
-        </NavLink>
-        <NavLink className="footer__link footer__item" to="/">
-          Contacts
-        </NavLink>
-        <NavLink className="footer__link footer__item" to="/">
-          Rights
-        </NavLink>
-      </div>
-      <div className="back-to-top">
-        <span className="back-to-top__text">Back to top</span>
-        <a className="back-to-top__link" href="#/">
-          <img
-            src="/Icons/Chevron (Arrow Right)Dark.svg"
-            alt="slider-button"
-            className="back-to-top__image"
-          />
+      <hr className="footer_divider" />
+      <footer className="footer">
+        <a href="/home" className="footer__logo-link">
+          <img src="/Icons/Logo.svg" alt="logo" className="footer__logo" />
         </a>
-      </div>
-    </footer>
-  </>
-);
+        <div className="footer__links">
+          <NavLink
+            className="footer__link footer__item"
+            to="https://github.com/fe-apr24-team2"
+          >
+            Github
+          </NavLink>
+          <NavLink className="footer__link footer__item" to="/">
+            Contacts
+          </NavLink>
+          <NavLink className="footer__link footer__item" to="/">
+            Rights
+          </NavLink>
+        </div>
+        <div className="back-to-top">
+          <span className="back-to-top__text">Back to top</span>
+          <a className="back-to-top__link" href="#/">
+            <img
+              src="/Icons/Chevron (Arrow Right)Dark.svg"
+              alt="slider-button"
+              className="back-to-top__image"
+            />
+          </a>
+        </div>
+      </footer>
+    </>
+  );
 };

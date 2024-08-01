@@ -1,26 +1,99 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './RecommendedGoods.scss';
 import { ProductCard } from '../ProductCard/ProductCard';
-import { Device } from '../../types/Device';
-import { getPhones } from '../../utils/api';
+import { getProducts } from '../../utils/api';
+import { Product } from '../../types/Product';
 
-export const RecommendedGoods: React.FC = () => {
-  const [phones, setPhones] = useState<Device[]>([]);
+type Props = {
+  title: string
+  sortType: 'model' | 'price'
+}
+
+// write it in the right component
+// <RecommendedGoods title="Brand new models" sortType="model" />
+// <RecommendedGoods title="Hot prices" sortType="price" />
+
+export const RecommendedGoods: React.FC<Props> = ({ title, sortType }) => {
+  const [phones, setPhones] = useState<Product[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const fetchPhones = async () => {
-    try {
-      const phonesData = await getPhones();
-      setPhones(phonesData);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to fetch phones:', error);
+  const sortByNewestModels = (a: Product, b: Product) => {
+    const getModalNumber = (name: string) => {
+      const modelPriorities: { [key: string]: number } = {
+        XS: 10,
+        XR: 9,
+      };
+
+      const match = name.match(/(\d+|XS|XR)/);
+
+      if (match) {
+        const value = match[0];
+        if (modelPriorities[value] !== undefined) {
+          return modelPriorities[value];
+        }
+
+        return parseInt(value, 10);
+      }
+
+      return -1;
+    };
+
+    const getModalPriority = (name: string) => {
+      const priorities: { [key: string]: number } = {
+        'Pro Max': 4,
+        Pro: 3,
+        Plus: 2,
+        Mini: 1,
+      };
+
+      const priorityKey = Object.keys(priorities).find((key) => name.includes(key));
+
+      return priorityKey ? priorities[priorityKey] : 0;
+    };
+
+    const modelNumberA = getModalNumber(a.name);
+    const modelNumberB = getModalNumber(b.name);
+
+    if (modelNumberA !== modelNumberB) {
+      return modelNumberB - modelNumberA;
     }
+    return getModalPriority(b.name) - getModalPriority(a.name);
   };
+
+  const sortByPriceDifference = (a: Product, b: Product) => {
+    const priceDiffA = a.fullPrice - a.price;
+    const priceDiffB = b.fullPrice - b.price;
+
+    return priceDiffB - priceDiffA;
+  };
+
+  const fetchPhones = useCallback(async () => {
+    try {
+      const phonesData = await getProducts();
+      const onlyPhones = phonesData.filter((item) => item.category === 'phones');
+      let sortedPhones = onlyPhones;
+
+      if (sortType === 'model') {
+        sortedPhones = onlyPhones
+          .filter((phone) => phone.capacity === '128GB')
+          .sort(sortByNewestModels);
+      }
+
+      if (sortType === 'price') {
+        sortedPhones = onlyPhones
+          .filter((phone) => phone.price < 1000)
+          .sort(sortByPriceDifference);
+      }
+
+      setPhones(sortedPhones);
+    } catch (error) {
+      throw new Error(`Failed to fetch phones: ${error}`);
+    }
+  }, [sortType]);
 
   useEffect(() => {
     fetchPhones();
-  }, []);
+  }, [fetchPhones]);
 
   const getVisibleItems = () => {
     if (window.innerWidth <= 480) {
@@ -72,7 +145,7 @@ export const RecommendedGoods: React.FC = () => {
   return (
     <>
       <div className="recommended">
-        <h1 className="recommended_title">You may also like</h1>
+        <h1 className="recommended_title">{title}</h1>
         <div className="recommended_buttons">
           <button
             className="recommended_arrow"
@@ -117,25 +190,7 @@ export const RecommendedGoods: React.FC = () => {
           .map((phone) => (
             <ProductCard
               key={phone.id}
-              id={phone.id}
-              category={phone.category}
-              namespaceId={phone.namespaceId}
-              name={phone.name}
-              capacityAvailable={phone.capacityAvailable}
-              capacity={phone.capacity}
-              priceRegular={phone.priceRegular}
-              priceDiscount={phone.priceDiscount}
-              colorsAvailable={phone.colorsAvailable}
-              color={phone.color}
-              images={phone.images}
-              description={phone.description}
-              screen={phone.screen}
-              resolution={phone.resolution}
-              processor={phone.processor}
-              ram={phone.ram}
-              camera={phone.camera}
-              zoom={phone.zoom}
-              cell={phone.cell}
+              phone={phone}
             />
           ))}
       </div>
