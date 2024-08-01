@@ -23,7 +23,7 @@ type Props = {
   category: string;
   pageName: string;
   pageTitle: string;
-}
+};
 
 export const Grid: React.FC<Props> = ({ category, pageTitle, pageName }) => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
