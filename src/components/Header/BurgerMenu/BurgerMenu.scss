@@ -147,11 +147,11 @@ $menuFont: Mont, sans-serif;
     &.is-active::after {
       content: '';
       position: absolute;
-      bottom: 0;
+      bottom: -2px;
       left: 0;
       right: 0;
-      height: 4px;
-      background-color: #313237;
+      height: 2px;
+      background-color: red;
       border-radius: 8px;
     }
   }
