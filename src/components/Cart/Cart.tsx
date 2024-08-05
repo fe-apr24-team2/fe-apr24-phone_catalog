@@ -62,7 +62,7 @@ export const Cart = () => {
           <div className="orderInterface">
             <h1 className="totalPrice">{`$${calculatePrice()}`}</h1>
             <div className="itemsCount">{`Total for ${calculateQuantity()} items`}</div>
-            <div className="line" />
+            <div className="line-checkout" />
             <button
               type="button"
               className={classNames('checkout', {

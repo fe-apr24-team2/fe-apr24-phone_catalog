@@ -42,6 +42,11 @@
   box-sizing: border-box;
   background-color: var(--color-white);
 
+  @media (max-width: 1199px) {
+    width: 592px;
+    padding: 31px;
+  }
+
   @media (max-width: 641px) {
     flex-direction: column;
     width: 288px;
@@ -63,6 +68,8 @@
 
   &_image__cross {
     margin: 32px 24px 32px 0;
+    background-color: var(--color-white);
+    border: none;
     cursor: pointer;
 
     @media (max-width: 641px) {
@@ -80,7 +87,7 @@
 
   &_name {
     width: 336px;
-    height: 42px;
+    // height: 42px;
     margin: 43px 24px;
     box-sizing: border-box;
     font-size: 14px;
@@ -88,6 +95,10 @@
     font-family: var(--font-family);
     font-weight: 600;
     color: var(--color-primary);
+
+    @media (max-width: 1199px) {
+      width: 176px;
+    }
 
     @media (max-width: 641px) {
       align-items: center;

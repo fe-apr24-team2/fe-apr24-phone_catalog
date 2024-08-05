@@ -96,7 +96,7 @@ export const BurgerMenu = () => {
             </a>
             <NavLink
               to="/cart"
-              className="burger-menu__icon-footer"
+              className={({ isActive }) => `burger-menu__icon-footer ${isActive ? 'is-active' : ''}`}
               aria-label="Cart"
             >
               <div className="circleWrap">
