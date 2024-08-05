@@ -1,5 +1,5 @@
 // BurgerMenu.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import './BurgerMenu.scss';
 import logo from '../img/logo.svg';
@@ -7,9 +7,13 @@ import menu from '../img/menu.svg';
 import closeMenu from '../img/Close.svg';
 import heartLike from '../img/heartLike.svg';
 import cart from '../img/cart.svg';
+import { CartContext } from '../../../utils/CartContext';
+import { useFavorites } from '../../../utils/useFavorites';
 
 export const BurgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const cartContext = useContext(CartContext);
+  const favoritesContext = useFavorites();
   const location = useLocation();
 
   useEffect(() => {
@@ -76,15 +80,33 @@ export const BurgerMenu = () => {
             </li>
           </ul>
           <div className="burger-menu__footer">
-            <a href="/#favorites" className="burger-menu__icon-footer" aria-label="Heart">
-              <img src={heartLike} alt="Heart" />
+            <a
+              href="/#favorites"
+              className="burger-menu__icon-footer"
+              aria-label="Heart"
+            >
+              <div className="circleWrap">
+                {!!favoritesContext.favorites.length && (
+                  <div className="burger-circle">
+                    {favoritesContext.favorites.length}
+                  </div>
+                )}
+                <img src={heartLike} alt="Heart" />
+              </div>
             </a>
             <NavLink
               to="/cart"
               className="burger-menu__icon-footer"
               aria-label="Cart"
             >
-              <img src={cart} alt="Cart" />
+              <div className="circleWrap">
+                {!!cartContext?.cart.length && (
+                  <div className="burger-circle">
+                    {cartContext?.cart.length}
+                  </div>
+                )}
+                <img src={cart} alt="Cart" />
+              </div>
             </NavLink>
           </div>
         </div>

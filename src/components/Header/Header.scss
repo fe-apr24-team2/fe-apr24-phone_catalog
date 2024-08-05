@@ -251,6 +251,10 @@ $mainFont: Mont, sans-serif;
   right: 18px;
 
   @media (max-width: 1199px) {
-    opacity: 0;
+    top: 9px;
+    right: 10px;
+    height: 13px;
+    width: 13px;
+    font-size: 8px;
   }
 }
